@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hybrid Quit Tobacco Program</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    /* =========================================
+       GLOBAL / THEME
+       ========================================= */
+
+    :root {
+      --bg-dark: #050816;
+      --bg-card: #0e1224;
+      --bg-card-soft: #11172b;
+      --accent-teal: #34d399;
+      --accent-gold: #facc15;
+      --accent-blue: #38bdf8;
+      --accent-red: #fb7185;
+      --text-main: #f9fafb;
+      --text-soft: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.25);
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.6);
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.24s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 55%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    body.theme-dark {
+      background: radial-gradient(circle at top, #111827 0, #020617 55%);
+    }
+
+    body.theme-gold {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+    }
+
+    body.theme-blue {
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%);
+    }
+
+    body.theme-light {
+      background: #f3f4f6;
+      color: #020617;
+    }
+
+    body.theme-light .card,
+    body.theme-light .nav-bar,
+    body.theme-light .screen {
+      background-color: #ffffff;
+      color: #020617;
+    }
+
+    body.theme-light .subtle {
+      color: #6b7280;
+    }
+
+    body.font-sm {
+      font-size: 14px;
+    }
+
+    body.font-md {
+      font-size: 16px;
+    }
+
+    body.font-lg {
+      font-size: 18px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+
+    /* =========================================
+       APP LAYOUT
+       ========================================= */
+
+    .app-shell {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 12px 64px;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.4));
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      margin-bottom: 12px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.6);
+    }
+
+    .app-header-main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .app-greeting {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-top: 3px;
+    }
+
+    .streak-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, #22c55e, #0f172a);
+      border: 1px solid rgba(34, 197, 94, 0.6);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      min-width: 96px;
+    }
+
+    .streak-pill strong {
+      font-size: 14px;
+    }
+
+    .streak-pill span {
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .screen {
+      display: none;
+      padding: 10px 2px 80px;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .screen-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .screen-subtitle {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    .screen-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* =========================================
+       CARDS & ELEMENTS
+       ========================================= */
+
+    .card {
+      background: radial-gradient(circle at top left, #111827, #020617);
+      border-radius: var(--radius-xl);
+      padding: 14px 14px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent-teal);
+    }
+
+    .pill-label {
+      opacity: 0.85;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .metric-card {
+      border-radius: 16px;
+      padding: 10px 9px;
+      background: radial-gradient(circle at top, #020617, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .metric-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .metric-caption {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .ghost-btn {
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background var(--transition-fast), transform var(--transition-fast),
+        opacity var(--transition-fast), box-shadow var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #22c55e, #06b6d4);
+      color: #f9fafb;
+      box-shadow: 0 16px 30px rgba(34, 197, 94, 0.35);
+    }
+
+    .primary-btn:active {
+      transform: scale(0.97);
+      box-shadow: none;
+    }
+
+    .secondary-btn {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-main);
+    }
+
+    .ghost-btn {
+      background: transparent;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      color: var(--text-soft);
+    }
+
+    .primary-btn[disabled],
+    .secondary-btn[disabled],
+    .ghost-btn[disabled] {
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: var(--text-soft);
+    }
+
+    .subtle {
+      color: var(--text-soft);
+    }
+
+    .divider {
+      height: 1px;
+      margin: 10px 0;
+      background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.55), transparent);
+    }
+
+    .progress-pill {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #22c55e, #06b6d4);
+      transition: width var(--transition-med);
+    }
+
+    /* =========================================
+       NAV BAR
+       ========================================= */
+
+    .nav-bar {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 8px;
+      width: 100%;
+      max-width: 480px;
+      z-index: 20;
+      padding: 6px 10px;
+    }
+
+    .nav-inner {
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 999px;
+      padding: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 4px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav-btn {
+      border-radius: 999px;
+      padding: 6px 4px;
+      background: transparent;
+      color: var(--text-soft);
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border: none;
+      transition: background var(--transition-fast), color var(--transition-fast),
+        transform var(--transition-fast);
+    }
+
+    .nav-btn span {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .nav-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.6);
+    }
+
+    .nav-btn.active {
+      background: radial-gradient(circle at top, #22c55e, #0f172a);
+      color: #e5fdf5;
+      transform: translateY(-1px);
+    }
+
+    .nav-btn.active .nav-dot {
+      background: #bbf7d0;
+    }
+
+    /* =========================================
+       PROGRAM SCREEN
+       ========================================= */
+
+    .program-day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .program-day-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .program-day-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .program-day-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .section-heading {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .section-body {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .task-item input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: #22c55e;
+      cursor: pointer;
+    }
+
+    .task-label {
+      font-size: 13px;
+    }
+
+    .task-label small {
+      display: block;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .reflection-box {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .dialogue-box {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.15), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      font-size: 13px;
+    }
+
+    .dialogue-box strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.8;
+    }
+
+    .program-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .program-progress-text {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    /* =========================================
+       CRAVING SCREEN
+       ========================================= */
+
+    .steps-list {
+      list-style: decimal;
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--text-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip-btn {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: background var(--transition-fast), color var(--transition-fast),
+        transform var(--transition-fast);
+    }
+
+    .chip-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .chip-btn.selected {
+      background: linear-gradient(130deg, #22c55e, #06b6d4);
+      color: #ecfeff;
+      border-color: transparent;
+    }
+
+    .inline-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .text-input {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 8px 10px;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      font-size: 13px;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: #22c55e;
+    }
+
+    /* =========================================
+       PROGRESS + MOTIVATION + SETTINGS
+       ========================================= */
+
+    .progress-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .progress-stat-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 2px;
+    }
+
+    .progress-stat-value {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .badge-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.24), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(250, 204, 21, 0.8);
+      color: #fef9c3;
+      white-space: nowrap;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .form-label {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .select-input {
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 8px 10px;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      font-size: 13px;
+    }
+
+    .select-input:focus {
+      outline: none;
+      border-color: #22c55e;
+    }
+
+    /* =========================================
+       UTILITY
+       ========================================= */
+
+    @media (max-width: 360px) {
+      .app-shell {
+        padding: 8px 8px 64px;
+      }
+
+      .card {
+        padding: 12px 10px;
+      }
+
+      .nav-inner {
+        padding: 4px 6px;
+      }
+    }
+  </style>
+</head>
+<body class="theme-dark font-md">
+  <div class="app-shell">
+    <!-- ================= HEADER ================ -->
+    <header class="app-header">
+      <div class="app-header-main">
+        <div class="app-title">Hybrid Quit Program</div>
+        <div class="app-greeting" id="headerGreeting">Welcome, Dost</div>
+      </div>
+      <div class="streak-pill">
+        <strong id="streakDays">0 Days</strong>
+        <span>Freedom streak</span>
+      </div>
+    </header>
+
+    <!-- ================= MAIN SCREENS ================ -->
+    <main>
+      <!-- DASHBOARD -->
+      <section class="screen active" id="screen-dashboard">
+        <div class="screen-title">Dashboard</div>
+        <div class="screen-subtitle">
+          Aaj ka focus, craving control & progress ek jagah.
+        </div>
+
+        <div class="screen-scroll">
+          <!-- Today card -->
+          <div class="card">
+            <div class="card-row">
+              <div>
+                <div class="card-title" id="todayLessonTitle">Day 1 · Addiction Ka Sach</div>
+                <div class="card-subtitle" id="todayLessonSubtitle">
+                  Aaj addiction ka asli loop samajhne ka din hai.
+                </div>
+              </div>
+              <button class="primary-btn" id="goToTodayLessonBtn">
+                Start / Continue
+              </button>
+            </div>
+            <div class="tag-row">
+              <span class="tag">10-Day Mind Program</span>
+              <span class="tag" id="currentDayTag">Day 1 of 10</span>
+            </div>
+            <div class="progress-pill">
+              <div class="progress-fill" id="programProgressBar"></div>
+            </div>
+            <div class="program-progress-text" id="programProgressText">
+              0 / 10 days completed
+            </div>
+          </div>
+
+          <!-- Metrics -->
+          <div class="card">
+            <div class="card-title">Your Freedom Stats</div>
+            <div class="metrics-row">
+              <div class="metric-card">
+                <div class="metric-label">Tobacco-free days</div>
+                <div class="metric-value" id="metricDaysFree">0</div>
+                <div class="metric-caption">Program based</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">Money saved (₹)</div>
+                <div class="metric-value" id="metricMoneySaved">0</div>
+                <div class="metric-caption">Approximate</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">Cravings handled</div>
+                <div class="metric-value" id="metricCravings">0</div>
+                <div class="metric-caption">Logged</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick action & quote -->
+          <div class="card">
+            <div class="card-row">
+              <div>
+                <div class="card-title">Feeling a craving?</div>
+                <div class="card-subtitle">
+                  5-minute Craving Crusher se wave ko pass hone do.
+                </div>
+              </div>
+              <button class="secondary-btn" id="quickCravingBtn">
+                Open SOS
+              </button>
+            </div>
+            <div class="divider"></div>
+            <div class="card-subtitle" id="dailyQuote">
+              “Craving sirf 2–3 minute ki wave hoti hai. Aapka freedom lifetime ka hai.”
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROGRAM -->
+      <section class="screen" id="screen-program">
+        <div class="screen-title">10-Day Quit Program</div>
+        <div class="screen-subtitle">
+          Har din ek powerful mind shift — next day tabhi unlock hoga jab aaj ke tasks complete hon.
+        </div>
+
+        <div class="screen-scroll">
+          <div class="card">
+            <div class="program-day-header">
+              <div>
+                <div class="program-day-label" id="programDayLabel">
+                  DAY 1 · FOUNDATIONS
+                </div>
+                <div class="program-day-title" id="programDayTitle">
+                  Addiction Ka Sach
+                </div>
+              </div>
+              <div>
+                <div class="pill">
+                  <span class="pill-dot"></span>
+                  <span class="pill-label" id="programDayStatus">
+                    In progress
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="program-day-chip-row" id="programDayChips">
+              <!-- dynamic tags -->
+            </div>
+
+            <div class="divider"></div>
+
+            <div id="programSectionsContainer">
+              <!-- dynamic sections for each day -->
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Tasks -->
+            <div>
+              <div class="section-heading">Aaj ke exercises (zaroori)</div>
+              <ul class="task-list" id="taskListContainer">
+                <!-- dynamic tasks -->
+              </ul>
+            </div>
+
+            <!-- Reflection -->
+            <div class="reflection-box" id="reflectionBox">
+              <!-- dynamic reflection text -->
+            </div>
+
+            <!-- Internal Dialogue -->
+            <div class="dialogue-box" id="dialogueBox">
+              <strong>Inner Dialogue</strong>
+              <span id="dialogueText">
+                “Craving sirf ek chemical echo hai. Main observe karta hoon, react nahi.”
+              </span>
+            </div>
+
+            <div class="program-footer">
+              <div class="program-progress-text" id="tasksSummaryText">
+                0 / 0 tasks completed today
+              </div>
+              <button class="primary-btn" id="nextDayBtn" disabled>
+                Complete today to unlock next day
+              </button>
+              <button class="ghost-btn" id="prevDayBtn">
+                ◀ Previous day
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CRAVING SOS -->
+      <section class="screen" id="screen-craving">
+        <div class="screen-title">Craving SOS</div>
+        <div class="screen-subtitle">
+          Jab craving aaye, yahan aao — wave ko safely pass hone do.
+        </div>
+
+        <div class="screen-scroll">
+          <div class="card">
+            <div class="card-title">5-Minute Craving Crusher</div>
+            <div class="card-subtitle" style="margin-bottom: 6px;">
+              Is flow ko follow karo jab craving peak par ho:
+            </div>
+            <ol class="steps-list">
+              <li>Ruk jao. 30 second ke liye sirf saans observe karo.</li>
+              <li>10–10–10 breathing: 10 count inhale, 10 hold, 10 exhale.</li>
+              <li>Yaad karo: craving ≠ zaroorat, ye chemical ki demand hai.</li>
+              <li>Craving ko wave ki tarah imagine karo — peak 2–3 minute.</li>
+              <li>Khud se bolo: “Main wait karta hoon, wave khud gir jayegi.”</li>
+            </ol>
+            <div class="divider"></div>
+            <button class="primary-btn" id="startCravingFlowBtn">
+              Start guided flow
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Craving Log</div>
+            <div class="card-subtitle">
+              Craving log karne se app aapke triggers ka “map” banata hai.
+            </div>
+            <div class="divider"></div>
+
+            <label class="inline-label">Trigger select karein:</label>
+            <div class="chip-row" id="cravingTriggerChips">
+              <!-- dynamic -->
+            </div>
+
+            <label class="inline-label" style="margin-top:8px;">Craving intensity:</label>
+            <div class="chip-row" id="cravingIntensityChips">
+              <!-- dynamic -->
+            </div>
+
+            <label class="inline-label" style="margin-top:8px;">Optional note:</label>
+            <textarea
+              id="cravingNoteInput"
+              rows="2"
+              class="text-input"
+              placeholder="Kaha the, kya kar rahe the, kaisa feel ho raha tha?"
+            ></textarea>
+
+            <div style="margin-top:8px; display:flex; gap:8px;">
+              <button class="secondary-btn" id="saveCravingLogBtn">
+                Save craving log
+              </button>
+              <button class="ghost-btn" id="quickChemicalReminderBtn">
+                Chemical truth
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Instant Chemical Reminder</div>
+            <div class="card-subtitle" id="chemicalReminderText">
+              “Ye craving meri nahi — mere andar ke nicotine, tar, aur doosre chemicals ki bhook hai. Main victim nahi, survivor hoon.”
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROGRESS -->
+      <section class="screen" id="screen-progress">
+        <div class="screen-title">Progress</div>
+        <div class="screen-subtitle">
+          Aapka streak, cravings map, health aur rewards yahan dekh sakte hain.
+        </div>
+
+        <div class="screen-scroll">
+          <div class="card">
+            <div class="card-title">Overview</div>
+            <div class="progress-grid" style="margin-top:6px;">
+              <div>
+                <div class="progress-stat-label">Program days completed</div>
+                <div class="progress-stat-value" id="statDaysCompleted">0 / 10</div>
+              </div>
+              <div>
+                <div class="progress-stat-label">Freedom streak</div>
+                <div class="progress-stat-value" id="statStreak">0 days</div>
+              </div>
+              <div>
+                <div class="progress-stat-label">Cravings logged</div>
+                <div class="progress-stat-value" id="statCravings">0</div>
+              </div>
+              <div>
+                <div class="progress-stat-label">Money saved</div>
+                <div class="progress-stat-value" id="statMoney">₹0</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="card-subtitle">
+              As program progresses, yahan aapko trigger heatmap & streak calendar ka summary milega.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Badges & Rewards</div>
+            <div class="card-subtitle">
+              Jitna consistent rahoge, utne zyada premium badges unlock honge.
+            </div>
+            <div class="badge-grid" id="badgesContainer">
+              <!-- dynamic badges -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MOTIVATION -->
+      <section class="screen" id="screen-motivation">
+        <div class="screen-title">Motivation</div>
+        <div class="screen-subtitle">
+          Daily boosts, affirmations aur after-quit journey ke rewards.
+        </div>
+
+        <div class="screen-scroll">
+          <div class="card">
+            <div class="card-title">Aaj ka Boost</div>
+            <div class="card-subtitle" id="motivationToday">
+              “Aaj jo craving aayi thi, wo sirf itna signal hai ki aapka dimaag heal ho raha hai.”
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Affirmations</div>
+            <div class="tag-row" id="affirmationsContainer">
+              <!-- dynamic -->
+            </div>
+          </div>
+
+          <div class="card" id="afterQuitCard">
+            <div class="card-title">After-Quit Journey</div>
+            <div class="card-subtitle" id="afterQuitSubtitle">
+              Jaise hi aap 10 din complete kar loge, yahan par 30-day freedom journey ka special content unlock hoga.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="screen" id="screen-settings">
+        <div class="screen-title">Settings</div>
+        <div class="screen-subtitle">
+          App ko apne style ke hisaab se customize karo.
+        </div>
+
+        <div class="screen-scroll">
+          <div class="card">
+            <div class="card-title">Profile</div>
+            <div class="divider"></div>
+            <div class="form-row">
+              <label for="usernameInput" class="form-label">Name (app aapse iss naam se baat karega)</label>
+              <input
+                type="text"
+                id="usernameInput"
+                class="text-input"
+                placeholder="Your name"
+              />
+            </div>
+            <button class="secondary-btn" id="saveProfileBtn">
+              Save name
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Appearance</div>
+            <div class="divider"></div>
+
+            <div class="form-row">
+              <label class="form-label" for="themeSelect">Theme</label>
+              <select id="themeSelect" class="select-input">
+                <option value="dark">Dark Premium</option>
+                <option value="gold">Gold Energy</option>
+                <option value="blue">Freedom Blue</option>
+                <option value="light">Calm Light</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label" for="fontSizeSelect">Font size</label>
+              <select id="fontSizeSelect" class="select-input">
+                <option value="sm">Small</option>
+                <option value="md" selected>Medium</option>
+                <option value="lg">Large</option>
+              </select>
+            </div>
+
+            <button class="secondary-btn" id="saveAppearanceBtn">
+              Apply appearance
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Notifications (Concept)</div>
+            <div class="card-subtitle">
+              Future real app me yahan se aap daily lesson, motivation & craving support ke notifications ko manage kar sakte ho.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ================= NAV BAR ================ -->
+  <div class="nav-bar">
+    <div class="nav-inner">
+      <button class="nav-btn active" data-target="dashboard">
+        <div class="nav-dot"></div>
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" data-target="program">
+        <div class="nav-dot"></div>
+        <span>Program</span>
+      </button>
+      <button class="nav-btn" data-target="craving">
+        <div class="nav-dot"></div>
+        <span>SOS</span>
+      </button>
+      <button class="nav-btn" data-target="progress">
+        <div class="nav-dot"></div>
+        <span>Progress</span>
+      </button>
+      <button class="nav-btn" data-target="motivation">
+        <div class="nav-dot"></div>
+        <span>More</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // STATE & DATA
+    // ============================================
+
+    const STORAGE_KEY = "hybridQuitAppState_v1";
+
+    const defaultState = {
+      username: "Dost",
+      theme: "dark",
+      fontSize: "md",
+      currentDay: 1,
+      completedDays: [],
+      tasksCompletedByDay: {}, // { dayNumber: [taskIds] }
+      cravings: [], // { trigger, intensity, note, ts }
+      moneySaved: 0,
+      badges: [],
+    };
+
+    let state = { ...defaultState };
+
+    // ------------- 10-DAY PROGRAM CONTENT (SUMMARY + KEY POINTS) -------------
+
+    const programDays = [
+      {
+        day: 1,
+        label: "Foundations",
+        title: "Addiction Ka Sach",
+        tags: ["Addiction loop", "Pleasure myth", "Observation"],
+        sections: [
+          {
+            heading: "Addiction loop (Trigger → Craving → Relief illusion)",
+            body:
+              "Aapka dimaag ek loop me phas gaya tha: trigger aata hai (morning, bike, meal ke baad), craving utti hai, aap use karte ho, jo relief milta hai wo sirf withdrawal kam hone ka hota hai — asli pleasure nahi.",
+          },
+          {
+            heading: "Relaxation ka jhooth",
+            body:
+              "Tobacco aapke body ko pehle stress me daalta hai (nicotine withdrawal), phir use karne par woh stress thoda kam lagta hai. Isko aap relaxation samajhte the. Asli me aap normal state par wapas aa rahe the.",
+          },
+          {
+            heading: "Craving ko observe karna",
+            body:
+              "Aaj ka main goal sirf itna hai ki jab craving aaye, aap usko bas dekho. Uski location, body feeling, duration note karo — lekin turant react mat karo.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d1-t1",
+            label: "Aaj kam se kam 3 cravings ko sirf observe karo, turant react nahi.",
+            hint: "Bas notice karo: craving kaha se start hui, kitna strong tha, aur kitne minute me peak se down aayi.",
+          },
+          {
+            id: "d1-t2",
+            label: "Ek line mentally 3–5 baar bolo: “Craving ek chemical echo hai.”",
+            hint: "Yeh line craving ke waqt distance create karegi.",
+          },
+        ],
+        reflection:
+          "Aaj aapne craving ko enemy nahi, ek signal ki tarah dekha. Aapko kya naya realize hua?",
+        dialogue:
+          "“Craving sirf ek chemical echo hai. Main observe karta hoon, react nahi. Power mere paas hai.”",
+      },
+      {
+        day: 2,
+        label: "Beliefs",
+        title: "Belief Shattering",
+        tags: ["Stress myth", "Boredom myth", "Pleasure vs relief"],
+        sections: [
+          {
+            heading: "Stress ka myth",
+            body:
+              "Reality: nicotine withdrawal khud stress create karta hai. Jab aap use karte ho, woh withdrawal thoda kam hota hai. Aapko lagta hai stress kam hua, par stress ka source bhi yehi tha.",
+          },
+          {
+            heading: "Boredom & enjoyment",
+            body:
+              "Boredom craving ka matlab hai dimaag ko stimulation chahiye. Ye tobacco ki zaroorat nahi, koi bhi healthy activity ye role le sakti hai.",
+          },
+          {
+            heading: "Pleasure vs withdrawal relief",
+            body:
+              "True pleasure aise experiences se aata hai jisme koi nuksaan nahi. Yahan jo 'sukoon' lagta hai, wo sirf withdrawal ke pain ka thoda sa kam hona hai.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d2-t1",
+            label: "Apne 3 strong beliefs list karo (jaise “ye stress kam karta hai”).",
+            hint: "Un beliefs ko likhne se unko objectively dekh paoge.",
+          },
+          {
+            id: "d2-t2",
+            label: "Har belief ke samne uska logical jawab likho.",
+            hint: "Jaise: “Stress kam nahi karta, bas withdrawal ka stress thoda kam lagta hai.”",
+          },
+        ],
+        reflection:
+          "Kaun sa belief tootne par aapko sabse zyada shock laga? Kyu?",
+        dialogue:
+          "“Stress ka asli solution main hoon. Tobacco ne sirf mujhe confuse kiya tha.”",
+      },
+      {
+        day: 3,
+        label: "Triggers",
+        title: "Trigger Mapping",
+        tags: ["Morning craving", "Bike loop", "Meals & toilet"],
+        sections: [
+          {
+            heading: "Morning craving ka science",
+            body:
+              "Raat bhar nicotine level drop hota hai. Subah dimaag pehla kaam yahi samajhta hai: ‘naya dose do’. Isko aap ne ‘morning ki zaroorat’ naam de diya.",
+          },
+          {
+            heading: "Bike & habit loops",
+            body:
+              "Bike chalate waqt haath ka automatic movement, pocket ki taraf jaana, muh me rakhna — ye sab ek conditioned pattern hai. Ye zaroorat nahi, ek trained movement hai.",
+          },
+          {
+            heading: "Meals & toilet triggers",
+            body:
+              "Khana khane ke baad digestion ke dauran dopamine level me halka dip aata hai. Dimaag use ko link kar leta hai. Toilet me bhi routine association ban jata hai.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d3-t1",
+            label:
+              "Apne top 3 triggers choose karo (morning, bike, meals, toilet, stress, boredom).",
+            hint: "Jo sabse frequent ya strongest feel hote hain.",
+          },
+          {
+            id: "d3-t2",
+            label:
+              "Har trigger ke liye 1 healthy replacement action decide karo.",
+            hint: "Jaise bike par chewing-gum, paani, ya deep breathing.",
+          },
+        ],
+        reflection:
+          "Kaun sa trigger aapko sabse strongly control karta hua lagta tha? Aaj usko dekhkar kaisa feel hua?",
+        dialogue:
+          "“Ye trigger sirf ek purana pattern hai. Main naya pattern choose kar sakta hoon.”",
+      },
+      {
+        day: 4,
+        label: "Chemicals",
+        title: "Chemical Truth Shock Day",
+        tags: ["Nicotine", "Cancer risk", "Body map"],
+        sections: [
+          {
+            heading: "Andar jaane wale chemicals",
+            body:
+              "Nicotine, nitrosamines, tar, ammonia, arsenic, polonium-210 jaise chemicals aapke blood, lungs, heart, brain me silently deposit hote rahe. Aapko aaaj tak full list nahi batayi gayi.",
+          },
+          {
+            heading: "Body timeline damage",
+            body:
+              "Use ke 10 minute baad heart rate & BP badhte hain. 10 ghante baad withdrawal start. Din, hafte, mahino me ye chemicals cells ko damage karte rehte hain — bina aapko turant pata chale.",
+          },
+          {
+            heading: "Organ damage map",
+            body:
+              "Lungs me tar coating, heart ko oxygen kam, brain me addiction loop, mouth me cells mutation risk — ye sab mila kar future me dangerous disease ka risk barhate hain.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d4-t1",
+            label:
+              "Jab aaj craving aaye, use mentally ek chemical demand ke label se dekho.",
+            hint: "Khud se bolo: “Ye craving mere andar ke chemical ko chahiye, mujhe nahi.”",
+          },
+          {
+            id: "d4-t2",
+            label:
+              "Ek sentence likho jisme aap chemicals ko directly address karo (“Tumne mujhe itne saal dhoka diya”).",
+            hint: "Ye anger & clarity ko chemical par shift karta hai, khud par nahi.",
+          },
+        ],
+        reflection:
+          "Aaj jab aapne chemicals ki list aur body map samjha, aapke andar guilt, shock ya anger me se sabse zyada kya feel hua?",
+        dialogue:
+          "“Main buri aadat nahi, chemical system ka victim tha. Aaj se power mere paas wapas aa rahi hai.”",
+      },
+      {
+        day: 5,
+        label: "Withdrawal",
+        title: "Withdrawal Fear Removal",
+        tags: ["Fear vs reality", "72-hour reset", "Craving wave"],
+        sections: [
+          {
+            heading: "Dar aur reality ka difference",
+            body:
+              "Hum jo imagine karte hain wo actual discomfort se hamesha zyada scary hota hai. Actual withdrawal me mostly irritability, halki bechaini, focus issue hote hain — manageable.",
+          },
+          {
+            heading: "72 ghante ka reset",
+            body:
+              "Science ke mutabik pehle 72 ghante me body ka nicotine level majorly clear ho jata hai. Dimaag ka reward system adjust hona start karta hai.",
+          },
+          {
+            heading: "Craving wave ka shape",
+            body:
+              "Wave jaisi: dheere upar, 2–3 minute peak, phir naturally neeche. Aapko sirf wave ke top ko ‘ride’ karna hota hai — bas itna hi.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d5-t1",
+            label:
+              "Aaj kam se kam 2 cravings ko 5 minute ke delay ke saath handle karo.",
+            hint: "Timer set karo, bas 5 minute ruk jao. Wave ko observe karo.",
+          },
+          {
+            id: "d5-t2",
+            label:
+              "Ek note banao: “Meri imagination vs actual withdrawal” aur dono ka difference likho.",
+            hint: "Yeh note future weak moments me aapko yaad dilayega ki dar exaggeration tha.",
+          },
+        ],
+        reflection:
+          "Jab aapne craving ko delay kiya, kya wo hamesha peak pe hi rahi, ya naturally neeche aayi?",
+        dialogue:
+          "“Wave powerful lag sakti hai, par chhoti hoti hai. Main usse bada hoon.”",
+      },
+      {
+        day: 6,
+        label: "Identity",
+        title: "Identity Shift Day",
+        tags: ["Non-user", "Mirror work", "Freedom mindset"],
+        sections: [
+          {
+            heading: "Smoker vs Non-user identity",
+            body:
+              "Aap ab woh insaan nahi jo 'tobacco wale' group me aata hai. Aap ek aise person ban rahe ho jo apne body, health & self-respect ko priority deta hai.",
+          },
+          {
+            heading: "Mirror technique",
+            body:
+              "Ayine me dekhkar khud ko ‘free human’ ke roop me accept karna subconscious ko direct message bhejta hai.",
+          },
+          {
+            heading: "Loss nahi, sirf gain",
+            body:
+              "Aap kuch bhi valuable lose nahi kar rahe — na health, na paisa, na time. Sirf toxicity, guilt & fear chhod rahe ho.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d6-t1",
+            label:
+              "Aaj kam se kam ek baar ayine me dekhkar bolo: “Main tobacco-free insaan hoon.”",
+            hint: "Is line ko feel karne ki koshish karo, sirf bolna nahi.",
+          },
+          {
+            id: "d6-t2",
+            label:
+              "Apne phone ka wallpaper koi freedom / health related image se change karo.",
+            hint: "Har unlock par aapko yaad aayega ki aap kaun ban rahe ho.",
+          },
+        ],
+        reflection:
+          "Kya aapko thoda bhi ajeeb ya powerful feel hua jab aapne khud ko non-user declare kiya?",
+        dialogue:
+          "“Main woh nahi jo pehle tha. Main ek naya, free version hoon.”",
+      },
+      {
+        day: 7,
+        label: "Emotions",
+        title: "Emotional Stability Mastery",
+        tags: ["Stress", "Anger", "Boredom", "Calm technique"],
+        sections: [
+          {
+            heading: "Stress-based cravings",
+            body:
+              "Jab nervous system overdrive me jata hai (kaam ka pressure, arguments), dimaag familiar comfort dhundta hai. Tobacco sirf ek learnt shortcut tha.",
+          },
+          {
+            heading: "Anger & sadness cravings",
+            body:
+              "Gussa, udaasi ya loneliness me craving ka matlab hai: ‘mujhe numb karo’. Ye emotion se bhaagna hai, solve nahi karna.",
+          },
+          {
+            heading: "60-second calm",
+            body:
+              "5 second inhale, 5 hold, 7 exhale — 6–8 cycles. Saath me shoulders relax karo. Emotion intact rahega, par panic layer melt ho jayegi.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d7-t1",
+            label:
+              "Aaj ek real emotional moment me pause technique try karo (deep breath + observe).",
+            hint: "Chahe office, ghar, ya traffic — ek real situation choose karo.",
+          },
+          {
+            id: "d7-t2",
+            label:
+              "Likho: “Tobacco ne meri kaun si emotions ko mask kiya?”",
+            hint: "Ye likhna emotional honesty ko activate karega.",
+          },
+        ],
+        reflection:
+          "Aaj aapne kis emotion ke saath sabse strong craving observe ki?",
+        dialogue:
+          "“Emotion saccha hai, craving fake hai. Main emotion ko handle kar sakta hoon.”",
+      },
+      {
+        day: 8,
+        label: "Mastery",
+        title: "Craving Mastery Tools",
+        tags: ["Wave riding", "Detachment", "Replacement habits"],
+        sections: [
+          {
+            heading: "Craving as a wave",
+            body:
+              "Ab aap craving ko wave jaisa dekh sakte ho: rise–peak–fall. Aapka kaam sirf surfboard par khade rehna hai, pani ke beech chillana nahi.",
+          },
+          {
+            heading: "Detachment technique",
+            body:
+              "“Mere dimaag me craving ho rahi hai” bolne ke bajaye “Mere dimaag me craving ka thought aa raha hai” bolo. Identity se 1 step door ho jao.",
+          },
+          {
+            heading: "Replacement behaviors",
+            body:
+              "Walk, paani, short stretches, cold water splash, chewing gum, short journaling — ye sab micro-actions craving ke waqt new associations create karte hain.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d8-t1",
+            label:
+              "Ek strong craving ko poori wave ke saath ride karo (time note karo).",
+            hint: "Start time, peak feeling, aur down time likho.",
+          },
+          {
+            id: "d8-t2",
+            label:
+              "Aaj craving ke waqt kam se kam 1 replacement behavior use karo.",
+            hint: "Jaise 2 minute walk ya paani.",
+          },
+        ],
+        reflection:
+          "Jab aapne wave ride ki, kya aapko lagta hai ki craving always forever rehti hai?",
+        dialogue:
+          "“Har craving ka start hai, peak hai, aur end hai. Main bas end tak wait kar sakta hoon.”",
+      },
+      {
+        day: 9,
+        label: "Slip Proof",
+        title: "Slip-Proof & Future Attacks",
+        tags: ["Slip vs relapse", "Social pressure", "Recovery plan"],
+        sections: [
+          {
+            heading: "Slip ≠ failure",
+            body:
+              "Slip ek incident hai, identity nahi. Jab ek baar phir se use ho jaye, iska matlab itna hi hai ki system ko adjust karna hai — aapko restart karne ka full right hai.",
+          },
+          {
+            heading: "Why slips happen",
+            body:
+              "5 main reasons: over-confidence, emotional overwhelm, social pressure, triggers ko underestimate karna, ya ‘bas ek baar’ wali soch.",
+          },
+          {
+            heading: "If-slip-happens plan",
+            body:
+              "Pehle se written plan hone se panic nahi hota. Aap calmly dekh sakte ho: kya hua, kyun hua, aur next time kya karoge.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d9-t1",
+            label:
+              "Apna 'If Slip Happens' plan likho (3–5 line).",
+            hint: "Jisme likho: kis ko call karna, kya sochna, kya repeat nahi karna.",
+          },
+          {
+            id: "d9-t2",
+            label:
+              "Ek social situation imagine karke ek line decide karo jo aap logon ko bol sakte ho.",
+            hint: "Jaise: “Maine chhod diya hai, ab seriously health pe focus hai.”",
+          },
+        ],
+        reflection:
+          "Agar aaj se 6 mahine baad slip ho jaye, aap khud ko kaise treat karna chahoge — dushman jaisa ya dost jaisa?",
+        dialogue:
+          "“Agar kabhi galti hoti bhi hai, main turant wapas freedom track par aa sakta hoon.”",
+      },
+      {
+        day: 10,
+        label: "Blueprint",
+        title: "Lifetime Freedom Blueprint",
+        tags: ["30-day plan", "Future triggers", "Freedom contract"],
+        sections: [
+          {
+            heading: "Next 30 days ka plan",
+            body:
+              "Agle 30 din aapka brain purane loops ko weak aur new identity ko strong banayega. Is duration me mindful rehna golden window jaisa hai.",
+          },
+          {
+            heading: "Future triggers & guardrails",
+            body:
+              "Parties, stress-days, travel, festivals — ye sab situations future me aayenge hi. Aaj hi inke liye guardrails (rules) decide karne se relapse risk bahut kam ho jata hai.",
+          },
+          {
+            heading: "Freedom contract",
+            body:
+              "Ek simple declaration jo aap app ke andar sign karte ho: aap kaun the, kaun ho, aur kaun banne se inkaar kar rahe ho.",
+          },
+        ],
+        tasks: [
+          {
+            id: "d10-t1",
+            label:
+              "Apna 30-day maintenance plan likho (morning, mid-day, night simple habits).",
+            hint: "Jaise morning me gratitude, mid-day small walk, night reflection.",
+          },
+          {
+            id: "d10-t2",
+            label:
+              "App ke andar apna Freedom Contract mentally sign karo.",
+            hint: "Ek line firm tarike se read karo: “Main aaj, kal aur hamesha tobacco-free hoon.”",
+          },
+        ],
+        reflection:
+          "Freedom ka sabse bada benefit aapko kis area me dikhta hai — health, confidence, family, ya kuch aur?",
+        dialogue:
+          "“Main free hoon. Aaj, kal, aur hamesha. Tobacco ab mere level ka nahi.”",
+      },
+    ];
+
+    const cravingTriggers = [
+      "Morning",
+      "Bike",
+      "After meals",
+      "Toilet",
+      "Stress",
+      "Boredom",
+      "Social",
+    ];
+
+    const cravingIntensityLevels = ["Mild", "Medium", "Strong", "Extreme"];
+
+    const affirmationList = [
+      "Main craving se bada hoon.",
+      "Mera dimaag heal ho raha hai.",
+      "Freedom hamesha better lagti hai.",
+      "Main victim nahi, victor hoon.",
+      "Har craving ke baad main stronger ban raha hoon.",
+    ];
+
+    const dailyQuotes = [
+      "Craving sirf minutes ki guest hai, aapka freedom permanent resident hai.",
+      "Aaj aapne apne dimaag ko chemicals se thoda aur wapas le liya.",
+      "Stress ko handle karna aap seekh rahe ho — bina tobacco ke.",
+      "Aapne jitne din use kiya, usse zyada smart aapka decision aaj hai.",
+      "Har completed task ek naya wire dimaag me banta hai — towards freedom.",
+    ];
+
+    // ============================================
+    // STATE HELPERS
+    // ============================================
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        state = { ...defaultState, ...parsed };
+      } catch (e) {
+        console.warn("Failed to load state, using defaults", e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn("Failed to save state", e);
+      }
+    }
+
+    function ensureDayTasksEntry(day) {
+      if (!state.tasksCompletedByDay[day]) {
+        state.tasksCompletedByDay[day] = [];
+      }
+    }
+
+    function isTaskCompleted(day, taskId) {
+      ensureDayTasksEntry(day);
+      return state.tasksCompletedByDay[day].includes(taskId);
+    }
+
+    function setTaskCompleted(day, taskId, completed) {
+      ensureDayTasksEntry(day);
+      const arr = state.tasksCompletedByDay[day];
+      const idx = arr.indexOf(taskId);
+      if (completed && idx === -1) {
+        arr.push(taskId);
+      } else if (!completed && idx !== -1) {
+        arr.splice(idx, 1);
+      }
+    }
+
+    function markDayCompleted(day) {
+      if (!state.completedDays.includes(day)) {
+        state.completedDays.push(day);
+        state.completedDays.sort((a, b) => a - b);
+      }
+    }
+
+    function getCurrentDayData() {
+      return programDays.find((d) => d.day === state.currentDay);
+    }
+
+    function getProgramProgressPercent() {
+      const completed = state.completedDays.length;
+      return (completed / programDays.length) * 100;
+    }
+
+    function getRandomQuote() {
+      const idx = Math.floor(Math.random() * dailyQuotes.length);
+      return dailyQuotes[idx];
+    }
+
+    // ============================================
+    // UI RENDERING
+    // ============================================
+
+    function applyThemeAndFont() {
+      const body = document.body;
+      body.classList.remove("theme-dark", "theme-gold", "theme-blue", "theme-light");
+      body.classList.remove("font-sm", "font-md", "font-lg");
+
+      const themeClass =
+        state.theme === "gold"
+          ? "theme-gold"
+          : state.theme === "blue"
+          ? "theme-blue"
+          : state.theme === "light"
+          ? "theme-light"
+          : "theme-dark";
+
+      const fontClass =
+        state.fontSize === "sm"
+          ? "font-sm"
+          : state.fontSize === "lg"
+          ? "font-lg"
+          : "font-md";
+
+      body.classList.add(themeClass, fontClass);
+
+      // also sync selectors
+      document.getElementById("themeSelect").value = state.theme;
+      document.getElementById("fontSizeSelect").value = state.fontSize;
+    }
+
+    function updateHeader() {
+      const name = state.username || "Dost";
+      const greetingEl = document.getElementById("headerGreeting");
+      greetingEl.textContent = `Welcome, ${name}`;
+      const streakEl = document.getElementById("streakDays");
+      const completed = state.completedDays.length;
+      streakEl.textContent = `${completed} Day${completed === 1 ? "" : "s"}`;
+    }
+
+    function renderDashboard() {
+      const currentDay = getCurrentDayData();
+      const titleEl = document.getElementById("todayLessonTitle");
+      const subtitleEl = document.getElementById("todayLessonSubtitle");
+      const tagEl = document.getElementById("currentDayTag");
+      const progressBar = document.getElementById("programProgressBar");
+      const progressText = document.getElementById("programProgressText");
+
+      titleEl.textContent = `Day ${currentDay.day} · ${currentDay.title}`;
+      subtitleEl.textContent = currentDay.sections[0]?.body || "";
+      tagEl.textContent = `Day ${currentDay.day} of ${programDays.length}`;
+
+      const percent = getProgramProgressPercent();
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${state.completedDays.length} / ${programDays.length} days completed`;
+
+      // metrics
+      document.getElementById("metricDaysFree").textContent =
+        state.completedDays.length;
+      document.getElementById("metricMoneySaved").textContent =
+        state.moneySaved.toFixed(0);
+      document.getElementById("metricCravings").textContent =
+        state.cravings.length;
+
+      // daily quote
+      document.getElementById("dailyQuote").textContent = getRandomQuote();
+    }
+
+    function renderProgramDay() {
+      const data = getCurrentDayData();
+      const day = data.day;
+
+      document.getElementById(
+        "programDayLabel"
+      ).textContent = `Day ${day} · ${data.label}`;
+      document.getElementById("programDayTitle").textContent = data.title;
+
+      // chips
+      const chipsContainer = document.getElementById("programDayChips");
+      chipsContainer.innerHTML = "";
+      data.tags.forEach((tag) => {
+        const span = document.createElement("span");
+        span.className = "chip";
+        span.textContent = tag;
+        chipsContainer.appendChild(span);
+      });
+
+      // sections
+      const secContainer = document.getElementById("programSectionsContainer");
+      secContainer.innerHTML = "";
+      data.sections.forEach((sec) => {
+        const div = document.createElement("div");
+        div.style.marginBottom = "8px";
+        const h = document.createElement("div");
+        h.className = "section-heading";
+        h.textContent = sec.heading;
+        const p = document.createElement("div");
+        p.className = "section-body";
+        p.textContent = sec.body;
+        div.appendChild(h);
+        div.appendChild(p);
+        secContainer.appendChild(div);
+      });
+
+      // tasks
+      const taskContainer = document.getElementById("taskListContainer");
+      taskContainer.innerHTML = "";
+      ensureDayTasksEntry(day);
+      data.tasks.forEach((task) => {
+        const li = document.createElement("li");
+        li.className = "task-item";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = isTaskCompleted(day, task.id);
+        checkbox.addEventListener("change", () => {
+          setTaskCompleted(day, task.id, checkbox.checked);
+          saveState();
+          updateProgramFooter();
+        });
+
+        const labelDiv = document.createElement("div");
+        labelDiv.className = "task-label";
+        labelDiv.innerHTML = `
+          ${task.label}
+          <small>${task.hint || ""}</small>
+        `;
+
+        li.appendChild(checkbox);
+        li.appendChild(labelDiv);
+        taskContainer.appendChild(li);
+      });
+
+      // reflection + dialogue
+      document.getElementById("reflectionBox").textContent = data.reflection;
+      document.getElementById("dialogueText").textContent = data.dialogue;
+
+      // status
+      const statusEl = document.getElementById("programDayStatus");
+      if (state.completedDays.includes(day)) {
+        statusEl.textContent = "Completed";
+      } else {
+        statusEl.textContent = "In progress";
+      }
+
+      // prev button
+      const prevBtn = document.getElementById("prevDayBtn");
+      prevBtn.disabled = day === 1;
+      prevBtn.textContent = day === 1 ? "◀ No previous day" : "◀ Previous day";
+
+      updateProgramFooter();
+    }
+
+    function updateProgramFooter() {
+      const data = getCurrentDayData();
+      const day = data.day;
+      ensureDayTasksEntry(day);
+
+      const totalTasks = data.tasks.length;
+      const completed = state.tasksCompletedByDay[day].length;
+
+      const tasksSummary = document.getElementById("tasksSummaryText");
+      tasksSummary.textContent = `${completed} / ${totalTasks} tasks completed today`;
+
+      const nextDayBtn = document.getElementById("nextDayBtn");
+
+      const allDone = completed >= totalTasks && totalTasks > 0;
+      nextDayBtn.disabled = !allDone;
+
+      if (!allDone) {
+        nextDayBtn.textContent = "Complete today to unlock next day";
+      } else if (day < programDays.length) {
+        nextDayBtn.textContent = `Unlock Day ${day + 1}`;
+      } else {
+        nextDayBtn.textContent = "Finish program · Enter After-Quit Mode";
+      }
+
+      // Mark day completed if all tasks done
+      if (allDone) {
+        markDayCompleted(day);
+      }
+
+      // update global dashboards/progress screen too
+      renderDashboard();
+      renderProgress();
+      renderMotivation();
+    }
+
+    function renderCravingChips() {
+      const triggerContainer = document.getElementById("cravingTriggerChips");
+      const intensityContainer = document.getElementById(
+        "cravingIntensityChips"
+      );
+
+      triggerContainer.innerHTML = "";
+      cravingTriggers.forEach((t) => {
+        const btn = document.createElement("button");
+        btn.className = "chip-btn";
+        btn.textContent = t;
+        btn.addEventListener("click", () => {
+          [...triggerContainer.children].forEach((c) =>
+            c.classList.remove("selected")
+          );
+          btn.classList.add("selected");
+          triggerContainer.dataset.selected = t;
+        });
+        triggerContainer.appendChild(btn);
+      });
+
+      intensityContainer.innerHTML = "";
+      cravingIntensityLevels.forEach((lvl) => {
+        const btn = document.createElement("button");
+        btn.className = "chip-btn";
+        btn.textContent = lvl;
+        btn.addEventListener("click", () => {
+          [...intensityContainer.children].forEach((c) =>
+            c.classList.remove("selected")
+          );
+          btn.classList.add("selected");
+          intensityContainer.dataset.selected = lvl;
+        });
+        intensityContainer.appendChild(btn);
+      });
+    }
+
+    function renderProgress() {
+      document.getElementById(
+        "statDaysCompleted"
+      ).textContent = `${state.completedDays.length} / ${programDays.length}`;
+      document.getElementById("statStreak").textContent =
+        state.completedDays.length + " days";
+      document.getElementById("statCravings").textContent =
+        state.cravings.length;
+      document.getElementById("statMoney").textContent =
+        "₹" + state.moneySaved.toFixed(0);
+
+      // Basic badge logic (can expand later)
+      const badges = [];
+
+      if (state.completedDays.length >= 1) {
+        badges.push("Day 1 Unlocked · Start of Freedom");
+      }
+      if (state.completedDays.length >= 3) {
+        badges.push("Trigger Hunter · You Mapped Your Patterns");
+      }
+      if (state.completedDays.length >= 5) {
+        badges.push("Wave Rider · Craving Mastery Growing");
+      }
+      if (state.completedDays.length >= 10) {
+        badges.push("10-Day Warrior · Core Program Complete");
+      }
+      if (state.cravings.length >= 5) {
+        badges.push("Craving Logger · Self Awareness Hero");
+      }
+
+      state.badges = badges;
+
+      const container = document.getElementById("badgesContainer");
+      container.innerHTML = "";
+      badges.forEach((b) => {
+        const span = document.createElement("span");
+        span.className = "badge";
+        span.textContent = b;
+        container.appendChild(span);
+      });
+    }
+
+    function renderMotivation() {
+      const quote = getRandomQuote();
+      document.getElementById("motivationToday").textContent = quote;
+
+      const affContainer = document.getElementById("affirmationsContainer");
+      affContainer.innerHTML = "";
+      affirmationList.forEach((a) => {
+        const span = document.createElement("span");
+        span.className = "tag";
+        span.textContent = a;
+        affContainer.appendChild(span);
+      });
+
+      const afterQuitCard = document.getElementById("afterQuitCard");
+      const afterQuitSubtitle = document.getElementById("afterQuitSubtitle");
+      if (state.completedDays.length >= 10) {
+        const extraDays = state.completedDays.length - 10;
+        afterQuitSubtitle.textContent =
+          extraDays <= 0
+            ? "Aapne 10-Day core program complete kar liya — ab 30-day freedom mode me daily boosts aayenge (concept)."
+            : `Aap core program se ${extraDays} din aage ho — yeh aapka extended freedom phase hai.`;
+      } else {
+        afterQuitSubtitle.textContent =
+          "Jaise hi aap 10 din complete kar loge, yahan par 30-day freedom journey ka special content unlock hoga.";
+      }
+    }
+
+    function renderSettings() {
+      document.getElementById("usernameInput").value = state.username;
+      document.getElementById("themeSelect").value = state.theme;
+      document.getElementById("fontSizeSelect").value = state.fontSize;
+    }
+
+    // ============================================
+    // EVENT HANDLERS
+    // ============================================
+
+    function setupNav() {
+      const navButtons = document.querySelectorAll(".nav-btn");
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.dataset.target;
+          showScreen(target);
+
+          navButtons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+    }
+
+    function showScreen(key) {
+      const allScreens = document.querySelectorAll(".screen");
+      allScreens.forEach((s) => s.classList.remove("active"));
+
+      let id;
+      switch (key) {
+        case "dashboard":
+          id = "screen-dashboard";
+          break;
+        case "program":
+          id = "screen-program";
+          break;
+        case "craving":
+          id = "screen-craving";
+          break;
+        case "progress":
+          id = "screen-progress";
+          break;
+        case "motivation":
+          id = "screen-motivation";
+          break;
+        case "settings":
+          id = "screen-settings";
+          break;
+        default:
+          id = "screen-dashboard";
+      }
+
+      document.getElementById(id).classList.add("active");
+    }
+
+    function setupDashboardButtons() {
+      document
+        .getElementById("goToTodayLessonBtn")
+        .addEventListener("click", () => {
+          showScreen("program");
+          document
+            .querySelector('.nav-btn[data-target="program"]')
+            .classList.add("active");
+        });
+
+      document.getElementById("quickCravingBtn").addEventListener("click", () => {
+        showScreen("craving");
+        document
+          .querySelector('.nav-btn[data-target="craving"]')
+          .classList.add("active");
+      });
+    }
+
+    function setupProgramButtons() {
+      document.getElementById("nextDayBtn").addEventListener("click", () => {
+        const current = state.currentDay;
+        const currentData = getCurrentDayData();
+        const totalTasks = currentData.tasks.length;
+        const completed =
+          state.tasksCompletedByDay[current]?.length || 0;
+
+        if (completed < totalTasks) return;
+
+        // Mark completed already handled in footer. Now move to next day if available
+        if (current < programDays.length) {
+          state.currentDay = current + 1;
+          saveState();
+          renderProgramDay();
+        } else {
+          // Finished full program
+          saveState();
+          alert(
+            "Congratulations! Aapne 10-Day core program complete kar liya. Ab app ko After-Quit freedom journey mode ke concept ke saath use kar sakte ho."
+          );
+        }
+      });
+
+      document.getElementById("prevDayBtn").addEventListener("click", () => {
+        if (state.currentDay > 1) {
+          state.currentDay -= 1;
+          saveState();
+          renderProgramDay();
+        }
+      });
+    }
+
+    function setupCravingHandlers() {
+      document
+        .getElementById("quickChemicalReminderBtn")
+        .addEventListener("click", () => {
+          document.getElementById("chemicalReminderText").textContent =
+            "“Ye craving meri nahi — mere andar ke nicotine aur baaki chemicals ki bhook hai. Main inka gulam nahi, unse aazad ho raha hoon.”";
+        });
+
+      document
+        .getElementById("saveCravingLogBtn")
+        .addEventListener("click", () => {
+          const trigContainer = document.getElementById("cravingTriggerChips");
+          const intContainer = document.getElementById(
+            "cravingIntensityChips"
+          );
+          const trigger = trigContainer.dataset.selected || "Unknown";
+          const intensity = intContainer.dataset.selected || "Unknown";
+          const note = document.getElementById("cravingNoteInput").value || "";
+
+          const entry = {
+            trigger,
+            intensity,
+            note,
+            ts: Date.now(),
+          };
+
+          state.cravings.push(entry);
+          state.moneySaved += 10; // rough example: each resisted craving = ₹10 saved
+          saveState();
+          renderDashboard();
+          renderProgress();
+
+          document.getElementById("cravingNoteInput").value = "";
+          alert("Craving log saved. Aapne apne dimaag ka map aur clear kiya.");
+        });
+
+      document
+        .getElementById("startCravingFlowBtn")
+        .addEventListener("click", () => {
+          alert(
+            "Guided Flow Idea (Concept):\n\n• 30 sec sirf saans observe\n• 10-10-10 breathing\n• Chemical truth repeat\n• Wave ko imagine karo (2–3 min peak)\n• Identity line bolo: “Main is wave se bada hoon.”"
+          );
+        });
+    }
+
+    function setupSettingsHandlers() {
+      document
+        .getElementById("saveProfileBtn")
+        .addEventListener("click", () => {
+          const name =
+            document.getElementById("usernameInput").value.trim() || "Dost";
+          state.username = name;
+          saveState();
+          updateHeader();
+          alert("Name saved. Ab app aapse is naam se baat karega.");
+        });
+
+      document
+        .getElementById("saveAppearanceBtn")
+        .addEventListener("click", () => {
+          const theme = document.getElementById("themeSelect").value;
+          const font = document.getElementById("fontSizeSelect").value;
+
+          state.theme = theme;
+          state.fontSize = font;
+          saveState();
+          applyThemeAndFont();
+        });
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadState();
+      applyThemeAndFont();
+      updateHeader();
+      renderDashboard();
+      renderProgramDay();
+      renderCravingChips();
+      renderProgress();
+      renderMotivation();
+      renderSettings();
+      setupNav();
+      setupDashboardButtons();
+      setupProgramButtons();
+      setupCravingHandlers();
+      setupSettingsHandlers();
+    });
+  </script>
+</body>
+</html>
